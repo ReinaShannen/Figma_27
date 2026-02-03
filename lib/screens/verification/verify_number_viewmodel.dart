@@ -52,6 +52,6 @@ class VerifyNumberViewModel {
 
   void dispose() {
     timer?.cancel();
-    otpController.dispose();
+    //otpController.dispose();
   }
 }

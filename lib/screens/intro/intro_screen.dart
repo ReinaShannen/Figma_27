@@ -49,7 +49,8 @@ class IntroScreen extends StatelessWidget {
             children: [
               SvgPicture.asset(
                 'assets/images/ami_logo.svg',
-                width: 80,
+                width: 122,
+
               ),
 
               const SizedBox(height: 16),
@@ -69,7 +70,7 @@ class IntroScreen extends StatelessWidget {
                 style: TextStyle(
                   fontFamily: 'RedHatDisplay',
                   fontSize: 26,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w900,
                   height: 1.3,
                   color: Color(0xFF1C2A39),
                 ),
@@ -84,6 +85,7 @@ class IntroScreen extends StatelessWidget {
                   fontFamily: 'WorkSans',
                   fontSize: 15,
                   height: 1.4,
+                  fontWeight: FontWeight.w500,
                   color: Color(0xFF6B6B6B),
                 ),
               ),
@@ -94,7 +96,7 @@ class IntroScreen extends StatelessWidget {
 
       // BUTTON
       Padding(
-        padding: EdgeInsets.fromLTRB(24, 12, 24, 16 + bottomInset),
+        padding: EdgeInsets.fromLTRB(24, 12, 24, 8 + bottomInset),
         child: Column(
           children: [
             PrimaryButton(
@@ -132,7 +134,7 @@ PrimaryButton(
 
                 SvgPicture.asset(
                   'assets/images/ami_logo.svg',
-                  width: 90,
+                  width: 122,
                 ),
 
                 const SizedBox(height: 24),
@@ -150,7 +152,7 @@ PrimaryButton(
                   style: TextStyle(
                     fontFamily: 'RedHatDisplay',
                     fontSize: 26,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w800,
                     height: 1.4,
                     color: Color(0xFF1C2A39),
                   ),
@@ -165,6 +167,7 @@ PrimaryButton(
                     fontFamily: 'WorkSans',
                     fontSize: 15,
                     height: 1.5,
+                    fontWeight: FontWeight.w500,
                     color: Color(0xFF6B6B6B),
                   ),
                 ),
@@ -331,4 +334,3 @@ PrimaryButton(
 //     );
 //   }
 // }
-

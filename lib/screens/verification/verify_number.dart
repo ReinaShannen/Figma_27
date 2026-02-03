@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../splash /verifying_screen.dart';
 import 'verify_number_viewmodel.dart';
+import '../../core/widgets/back_button.dart';
 
 class VerifyNumberScreen extends StatefulWidget {
   final String phoneNumber;
@@ -25,6 +26,57 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
     super.dispose();
   }
 
+
+//   Widget _buildOtpFields(BuildContext context) {
+//   final isLandscape =
+//       MediaQuery.of(context).orientation == Orientation.landscape;
+
+//   // 🎯 Explicit sizes per orientation
+//   final double fieldWidth = isLandscape ? 44 : 72;
+//   final double fieldHeight = isLandscape ? 48 : 58;
+//   final double fieldFontSize = isLandscape ? 16 : 18;
+
+//   return Center(
+//     child: PinCodeTextField(
+//       appContext: context,
+//       length: 4,
+//       controller: _viewModel.otpController,
+
+//       // 🚨 IMPORTANT: prevent controller disposal issues
+//       autoDisposeControllers: false,
+
+//       keyboardType: TextInputType.number,
+//       autoFocus: true,
+//       animationType: AnimationType.fade,
+//       inputFormatters: [
+//         FilteringTextInputFormatter.digitsOnly,
+//       ],
+//       textStyle: TextStyle(
+//         color: Colors.black,
+//         fontSize: fieldFontSize,
+//         fontWeight: FontWeight.w600,
+//       ),
+//       onChanged: (_) {},
+//       pinTheme: PinTheme(
+//         shape: PinCodeFieldShape.box,
+//         borderRadius: BorderRadius.circular(9),
+//         fieldHeight: fieldHeight,
+//         fieldWidth: fieldWidth,
+//         activeFillColor: Colors.white,
+//         inactiveFillColor: Colors.white,
+//         selectedFillColor: Colors.white,
+//         inactiveColor: const Color(0xFFECECEC),
+//         activeColor:const Color(0xFFECECEC) ,
+//         selectedColor: const Color(0xFFECECEC),
+//       ),
+//       enableActiveFill: true,
+//     ),
+//   );
+// }
+
+
+
+
   @override
   Widget build(BuildContext context) {
     final Color borderColor = _viewModel.showOtpError
@@ -34,42 +86,23 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
             : const Color(0xFFECECEC);
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: const Color(0xFFF5F5F5),
 
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFF5F5F5),
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 8),
-          child: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              width: 44,
-              height: 44,
-              decoration: const BoxDecoration(
-                color: Color(0xFFF2F2F2),
-                shape: BoxShape.circle,
-              ),
-              alignment: Alignment.center,
-              child: SvgPicture.asset(
-                'assets/images/back_arrow.svg',
-                width: 40,
-                height: 40,
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
-        ),
-      ),
 
- body: SafeArea(
+
+body: SafeArea(
+  left: true,
+  right: true,
   child: SingleChildScrollView(
-    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
     padding: const EdgeInsets.all(20),
     child: Column(
+
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+    const SizedBox(height: 12),
+    const CommonBackButton(),
+    const SizedBox(height: 24),
         Text.rich(
           TextSpan(
             children: [
@@ -109,27 +142,46 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
 
         const SizedBox(height: 32),
 
-        PinCodeTextField(
+
+OrientationBuilder(
+  builder: (context, orientation) {
+    final isLandscape = orientation == Orientation.landscape;
+
+    // Force tighter layout in landscape
+    final double fieldWidth = isLandscape ? 40 : 72;
+    final double fieldHeight = isLandscape ? 44 : 58;
+    final double gap = isLandscape ? 6 : 12;
+
+    return Center(
+      child: SizedBox(
+        // 🔥 This is the KEY: force total width
+        width: isLandscape ? 200 : double.infinity,
+        child: PinCodeTextField(
           appContext: context,
           length: 4,
           controller: _viewModel.otpController,
+          autoDisposeControllers: false,
           keyboardType: TextInputType.number,
           autoFocus: true,
           animationType: AnimationType.fade,
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
           ],
-          textStyle: const TextStyle(
+          textStyle: TextStyle(
             color: Colors.black,
-            fontSize: 18,
+            fontSize: isLandscape ? 16 : 18,
             fontWeight: FontWeight.w600,
           ),
           onChanged: (_) {},
+
+          separatorBuilder: (context, index) =>
+              SizedBox(width: gap),
+
           pinTheme: PinTheme(
             shape: PinCodeFieldShape.box,
             borderRadius: BorderRadius.circular(9),
-            fieldHeight: 58,
-            fieldWidth: 60,
+            fieldHeight: fieldHeight,
+            fieldWidth: fieldWidth,
             activeFillColor: Colors.white,
             inactiveFillColor: Colors.white,
             selectedFillColor: Colors.white,
@@ -139,6 +191,72 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
           ),
           enableActiveFill: true,
         ),
+      ),
+    );
+  },
+),
+
+const SizedBox(height: 16),
+
+//         // ===== SAFE OTP WIDTH =====
+// Builder(
+//   builder: (context) {
+//     final media = MediaQuery.of(context);
+//     final isLandscape =
+//         media.orientation == Orientation.landscape;
+
+//     // Tighter sizing for landscape
+//     final safeHorizontal = media.padding.horizontal;
+//     final availableWidth =
+//         media.size.width - safeHorizontal - 40;
+
+//     final rawFieldWidth =
+//         isLandscape
+//             ? (availableWidth - 12) / 4 // 🔥 tighter in landscape
+//             : (availableWidth - 24) / 4;
+
+//     final fieldWidth = rawFieldWidth.clamp(
+//       isLandscape ? 36.0 : 44.0,  // 🔥 smaller min in landscape
+//       isLandscape ? 60.0 : 80.0,
+//     );
+
+//     return PinCodeTextField(
+//       appContext: context,
+//       length: 4,
+//       controller: _viewModel.otpController,
+//       keyboardType: TextInputType.number,
+//       autoFocus: true,
+//       animationType: AnimationType.fade,
+//       inputFormatters: [
+//         FilteringTextInputFormatter.digitsOnly,
+//       ],
+//       textStyle: const TextStyle(
+//         color: Colors.black,
+//         fontSize: 18,
+//         fontWeight: FontWeight.w600,
+//       ),
+//       onChanged: (_) {},
+
+//       // 🔥 KEY: tighter gap between boxes
+//       separatorBuilder: (context, index) =>
+//           SizedBox(width: isLandscape ? 6 : 10),
+
+//       pinTheme: PinTheme(
+//         shape: PinCodeFieldShape.box,
+//         borderRadius: BorderRadius.circular(9),
+//         fieldHeight: 56,
+//         fieldWidth: fieldWidth,
+//         activeFillColor: Colors.white,
+//         inactiveFillColor: Colors.white,
+//         selectedFillColor: Colors.white,
+//         inactiveColor: borderColor,
+//         activeColor: borderColor,
+//         selectedColor: borderColor,
+//       ),
+//       enableActiveFill: true,
+//     );
+//   },
+// ),
 
         const SizedBox(height: 16),
 
@@ -162,55 +280,65 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
           ),
         ),
 
-        const SizedBox(height: 32),
-
-        SizedBox(
-          width: double.infinity,
-          height: 52,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFFF5A21),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(26),
-              ),
-            ),
-            onPressed: () {
-              final isValid =
-                  _viewModel.validateOtp(() => setState(() {}));
-
-              if (!isValid) return;
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const VerifyingScreen(),
-                ),
-              );
-            },
-            child: const Text(
-              'verify phone number',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                height: 1.2,
-              ),
-            ),
-          ),
-        ),
-
-        const SizedBox(height: 24),
+        const SizedBox(height: 40), // replaces Spacer safely
       ],
     ),
   ),
 ),
 
+
+
+     
+bottomNavigationBar: SafeArea(
+  top: false,
+  child: AnimatedPadding(
+    duration: const Duration(milliseconds: 200),
+    curve: Curves.easeOut,
+    padding: EdgeInsets.only(
+      left: 20,
+      right: 20,
+      // Only keyboard height — SafeArea handles iPhone inset
+      bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+    ),
+    child: SizedBox(
+      width: double.infinity,
+      height: 52,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFFFF5A21),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(26),
+          ),
+        ),
+        onPressed: () {
+          final isValid =
+              _viewModel.validateOtp(() => setState(() {}));
+
+          if (!isValid) return;
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const VerifyingScreen(),
+            ),
+          );
+        },
+        child: const Text(
+          'verify phone number',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            height: 1.2,
+          ),
+        ),
+      ),
+    ),
+  ),
+),
     );
   }
 }
-
-
-
 
 
 

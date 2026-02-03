@@ -34,7 +34,7 @@ class ChangeMobileViewModel {
     }
 
     if (phone.length < 8 || phone.length > 10) {
-      phoneError = 'Please enter a valid mobile number';
+      phoneError = 'Please enter a valid number';
       return false;
     }
 

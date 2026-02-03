@@ -3,6 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/widgets/primary_button.dart';
 import '../verification/change_mobile.dart';
+import '../../core/widgets/country_picker.dart';
+import '../../core/widgets/back_button.dart';
+
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -16,197 +19,66 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _phoneController = TextEditingController();
 
   bool isAccepted = false;
+  int selectedCountryIndex = 0;
 
-  String selectedCountryCode = '+44';
-  String selectedFlag = '🇬🇧';
 
-  final List<Map<String, String>> countries = [
-    {'name': 'United Kingdom', 'code': '+44', 'flag': '🇬🇧'},
-    {'name': 'India', 'code': '+91', 'flag': '🇮🇳'},
-    {'name': 'United States', 'code': '+1', 'flag': '🇺🇸'},
-  ];
+String selectedCountryCode = '+44';
+String selectedFlagAsset = 'assets/images/UK.svg';
 
-  void _openCountryPicker() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.white,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) {
-        return SafeArea(
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.7,
-            child: Column(
-              children: [
-                const SizedBox(height: 8),
+final List<Map<String, String>> countries = List.filled(6, {
+  'name': 'United Kingdom',
+  'code': '+44',
+  'asset': 'assets/images/UK.svg', 
+});
 
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Center(
-                          child: Container(
-                            width: 40,
-                            height: 4,
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade300,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: Container(
-                          width: 32,
-                          height: 32,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFF2F2F2),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(Icons.close, size: 20),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
 
-                const SizedBox(height: 16),
+void _openCountryPicker() {
+showCustomCountryPicker(
+  context: context,
+  countries: countries,
+  selectedIndex: selectedCountryIndex,
+  onSelect: (index, code, flagAsset) {
+    setState(() {
+      selectedCountryIndex = index;
+      selectedCountryCode = code;
+      selectedFlagAsset = flagAsset;
+    });
+  },
+);
 
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Container(
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF7F7F7),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Search',
-                        prefixIcon: Icon(Icons.search, color: Colors.grey),
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(vertical: 12),
-                      ),
-                    ),
-                  ),
-                ),
 
-                const SizedBox(height: 16),
+}
 
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: countries.length,
-                    itemBuilder: (context, index) {
-                      final country = countries[index];
-                      final isSelected =
-                          country['code'] == selectedCountryCode;
-
-                      return InkWell(
-                        onTap: () {
-                          setState(() {
-                            selectedCountryCode = country['code']!;
-                            selectedFlag = country['flag']!;
-                          });
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 14,
-                          ),
-                          color: isSelected
-                              ? const Color(0xFFF2F2F2)
-                              : Colors.white,
-                          child: Row(
-                            children: [
-                              Text(
-                                country['flag']!,
-                                style: const TextStyle(fontSize: 22),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      country['name']!,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      country['code']!,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              if (isSelected)
-                                const Icon(
-                                  Icons.check,
-                                  color: Color(0xFFFF5421),
-                                ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFAFAFC),
 
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Form(
-            key: _formKey,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
+    body: SafeArea(
+  child: SingleChildScrollView(
+    child: Form(
+      key: _formKey,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 12),
+
+          // ✅ Back button with slight inset
+          const Padding(
+            padding: EdgeInsets.only(left: 16),
+            child: CommonBackButton(),
+          ),
+
+          const SizedBox(height: 24),
+
+          // ✅ Everything else gets horizontal padding
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 12),
-
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    width: 44,
-                    height: 44,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFF2F2F2),
-                      shape: BoxShape.circle,
-                    ),
-                    alignment: Alignment.center,
-                    child: SvgPicture.asset(
-                      'assets/images/back_arrow.svg',
-                      width: 40,
-                      height: 40,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 24),
-
                 const Text(
                   "Let’s get started",
                   style: TextStyle(
@@ -258,7 +130,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
                 const SizedBox(height: 16),
 
-                // PHONE
+                // PHONE ROW
                 Row(
                   children: [
                     GestureDetector(
@@ -273,8 +145,12 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         child: Row(
                           children: [
-                            Text(selectedFlag,
-                                style: const TextStyle(fontSize: 20)),
+                            SvgPicture.asset(
+                              selectedFlagAsset,
+                              width: 20,
+                              height: 20,
+                              fit: BoxFit.contain,
+                            ),
                             const SizedBox(width: 8),
                             Text(selectedCountryCode),
                             const SizedBox(width: 4),
@@ -334,7 +210,6 @@ class _SignupScreenState extends State<SignupScreen> {
                   },
                 ),
 
-
                 const SizedBox(height: 16),
 
                 PrimaryButton(
@@ -345,9 +220,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     width: 24,
                     height: 24,
                   ),
-                  onTap: () {
-                    // keep empty or wire later
-                  },
+                  onTap: () {},
                 ),
 
                 const SizedBox(height: 16),
@@ -361,28 +234,29 @@ class _SignupScreenState extends State<SignupScreen> {
                     size: 26,
                     weight: 26,
                   ),
-                  onTap: () {
-                    // keep empty or wire later
-                  },
+                  onTap: () {},
                 ),
 
                 const SizedBox(height: 24),
 
-                Center(
+                const Center(
                   child: Text(
                     'Login instead?',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
-
               ],
             ),
           ),
-        ),
+        ],
       ),
+    ),
+  ),
+),
+
 
       bottomNavigationBar: SafeArea(
         child: Padding(

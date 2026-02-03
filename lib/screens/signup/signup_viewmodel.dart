@@ -25,8 +25,11 @@ class SignupViewModel {
   void goToChangeMobile(BuildContext context) {
     if (!formKey.currentState!.validate()) return;
 
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.clearSnackBars();
+
     if (!isAccepted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         const SnackBar(
           content: Text('Please accept Terms & Privacy Policy'),
         ),
@@ -34,6 +37,7 @@ class SignupViewModel {
       return;
     }
 
+    messenger.clearSnackBars();
     Navigator.push(
       context,
       MaterialPageRoute(
