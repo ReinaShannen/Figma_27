@@ -15,6 +15,15 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: AppRoutes.splash,
       routes: AppRoutes.routes,
+      builder: (context, child) {
+        return GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () {
+            FocusManager.instance.primaryFocus?.unfocus();
+          },
+          child: child,
+        );
+      },
     );
   }
 }

@@ -127,7 +127,7 @@ void _onAddCardPressed() {
       expiryError == null &&
       cvvError == null &&
       nameError == null) {
-    // ✅ All valid — proceed
+    //  All valid — proceed
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const VerifyingCardScreen()),
@@ -143,7 +143,7 @@ void _onAddCardPressed() {
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
 
-      /// 🔴 Bottom CTA
+      /// Bottom CTA
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: EdgeInsets.fromLTRB(
@@ -178,7 +178,7 @@ void _onAddCardPressed() {
         ),
       ),
 
-      /// 🔽 Body
+      ///  Body
       body: SafeArea(
         child: SingleChildScrollView(
           keyboardDismissBehavior:
@@ -213,7 +213,7 @@ void _onAddCardPressed() {
 
               const SizedBox(height: 32),
 
-              /// Currency selector (FIXED)
+              /// Currency selector
               CurrencySelector(
                 selectedCurrency: _selectedCurrency,
                 onChanged: (value) {
@@ -225,7 +225,7 @@ void _onAddCardPressed() {
 
               const SizedBox(height: 24),
 
-              /// Card details (FIXED – single source of truth)
+              /// Card details 
               CardDetailsSection(
                 cardNumberController: _cardNumberController,
                 expiryController: _expiryController,

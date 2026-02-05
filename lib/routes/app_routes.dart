@@ -8,6 +8,7 @@ import '../screens/payment/verifying_card_screen.dart';
 import '../screens/payment/verified_card_screen.dart';
 import '../screens/payment/add_bank_account_screen.dart';
 import '../screens/home/hey_user_screen.dart';
+import '../screens/groups/create_group_intro_screen.dart';
 import '../screens/verification/change_mobile.dart';
 import '../screens/verification/verify_number.dart';
 import '../screens/splash /splash_screen.dart';
@@ -22,6 +23,7 @@ class AppRoutes {
   static const verifiedCard = '/verified-card';
   static const addBankAccount = '/add-bank-account';
   static const heyUser = '/hey-user';
+  static const createGroupIntro = '/create-group-intro';
   static const changeMobile = '/change-mobile';
   static const verifyNumber = '/verify-number';
 
@@ -35,6 +37,7 @@ class AppRoutes {
         verifiedCard: (_) => const VerifiedCardScreen(),
         addBankAccount: (_) => AddBankAccountScreen(),
         heyUser: (_) => const HeyUserScreen(),
+        createGroupIntro: (_) => const CreateGroupIntroScreen(),
         changeMobile: (_) => const ChangeMobileScreen(),
         verifyNumber: (context) {
           final args = ModalRoute.of(context)?.settings.arguments;

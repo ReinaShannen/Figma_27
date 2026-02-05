@@ -74,7 +74,7 @@ showCustomCountryPicker(
         children: [
           const SizedBox(height: 12),
 
-          // ✅ Back button with slight inset
+          // Back button 
           const Padding(
             padding: EdgeInsets.only(left: 16),
             child: CommonBackButton(),
@@ -82,7 +82,7 @@ showCustomCountryPicker(
 
           const SizedBox(height: 24),
 
-          // ✅ Everything else gets horizontal padding
+          
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
@@ -98,7 +98,7 @@ showCustomCountryPicker(
                   ),
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 20),
 
                 // NAME
                 _textField(
@@ -147,7 +147,7 @@ showCustomCountryPicker(
                       onTap: _openCountryPicker,
                       child: Container(
                         height: 56,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           border:
@@ -157,14 +157,14 @@ showCustomCountryPicker(
                           children: [
                             SvgPicture.asset(
                               selectedFlagAsset,
-                              width: 20,
-                              height: 20,
+                              width: 24,
+                              height: 24,
                               fit: BoxFit.contain,
                             ),
                             const SizedBox(width: 8),
                             Text(selectedCountryCode),
                             const SizedBox(width: 4),
-                            const Icon(Icons.keyboard_arrow_down),
+                            const Icon(Icons.keyboard_arrow_down, size: 24),
                           ],
                         ),
                       ),
@@ -249,7 +249,7 @@ showCustomCountryPicker(
                   onTap: () {},
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 68),
 
                 const Center(
                   child: Text(

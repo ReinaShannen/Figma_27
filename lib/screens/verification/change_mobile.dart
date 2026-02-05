@@ -21,6 +21,7 @@ class ChangeMobileScreen extends StatefulWidget {
 
 class _ChangeMobileScreenState extends State<ChangeMobileScreen> {
   final ChangeMobileViewModel _viewModel = ChangeMobileViewModel();
+  final _formKey = GlobalKey<FormState>();
 
 int selectedCountryIndex = 0;
 String selectedCountryCode = '+44';
@@ -54,16 +55,19 @@ final List<Map<String, String>> countries = List.generate(6, (_) => {
 
 
       // ======================
-      // BODY (SCROLLABLE FORM)
+      // BODY 
       // ======================
       body: SafeArea(
         left: true,
         right: true,
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+          child: Form(
+            key: _formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                   const SizedBox(height: 12),
                   const CommonBackButton(),
                   const SizedBox(height: 24),
@@ -154,20 +158,30 @@ final List<Map<String, String>> countries = List.generate(6, (_) => {
                         FilteringTextInputFormatter.digitsOnly,
                         LengthLimitingTextInputFormatter(10),
                       ],
-                      errorText: _viewModel.phoneError,
+                      validator: (value) {
+                        final phone = value?.trim() ?? '';
+                        if (phone.isEmpty) {
+                          return 'Please enter mobile number';
+                        }
+                        if (phone.length < 8 || phone.length > 10) {
+                          return 'Please enter a valid number';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                 ],
               ),
 
               const SizedBox(height: 40), // replaces Spacer safely
-            ],
+              ],
+            ),
           ),
         ),
       ),
 
       // ======================
-      // FIXED BOTTOM BUTTON 
+      // BOTTOM BUTTON 
       // ======================
 bottomNavigationBar: SafeArea(
   top: false,
@@ -191,11 +205,9 @@ bottomNavigationBar: SafeArea(
           ),
         ),
         onPressed: () {
-          setState(() {
-            if (_viewModel.validatePhone()) {
-              _viewModel.goToVerify(context);
-            }
-          });
+          if (_formKey.currentState?.validate() ?? false) {
+            _viewModel.goToVerify(context);
+          }
         },
         child: const Text(
           'Change mobile number',

@@ -95,7 +95,7 @@ body: SafeArea(
   left: true,
   right: true,
   child: SingleChildScrollView(
-    padding: const EdgeInsets.all(20),
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
     child: Column(
 
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,7 +103,9 @@ body: SafeArea(
     const SizedBox(height: 12),
     const CommonBackButton(),
     const SizedBox(height: 24),
-        Text.rich(
+        Padding(
+          padding: const EdgeInsets.only(left: 16),
+          child: Text.rich(
           TextSpan(
             children: [
               const TextSpan(
@@ -138,25 +140,28 @@ body: SafeArea(
               ),
             ],
           ),
+          ),
         ),
 
-        const SizedBox(height: 32),
+        const SizedBox(height: 24),
 
 
 OrientationBuilder(
   builder: (context, orientation) {
     final isLandscape = orientation == Orientation.landscape;
 
-    // Force tighter layout in landscape
-    final double fieldWidth = isLandscape ? 40 : 72;
     final double fieldHeight = isLandscape ? 44 : 58;
-    final double gap = isLandscape ? 6 : 12;
+    final double gap = isLandscape ? 12 : 24;
 
-    return Center(
-      child: SizedBox(
-        // 🔥 This is the KEY: force total width
-        width: isLandscape ? 200 : double.infinity,
-        child: PinCodeTextField(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final availableWidth = constraints.maxWidth;
+          final fieldWidth =
+              ((availableWidth - (3 * gap)) / 4).clamp(40.0, 80.0);
+
+          return PinCodeTextField(
           appContext: context,
           length: 4,
           controller: _viewModel.otpController,
@@ -190,7 +195,8 @@ OrientationBuilder(
             selectedColor: borderColor,
           ),
           enableActiveFill: true,
-        ),
+          );
+        },
       ),
     );
   },

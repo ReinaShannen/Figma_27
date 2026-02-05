@@ -66,7 +66,6 @@ if (_passwordError == null && _confirmPasswordError == null) {
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
 
-      /// ✅ BUTTON FLOATS ABOVE KEYBOARD (ALWAYS ORANGE)
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: EdgeInsets.fromLTRB(
@@ -150,24 +149,24 @@ if (_passwordError == null && _confirmPasswordError == null) {
               const SizedBox(height: 8),
 
               PassTextField(
-  hint: 'Enter password',
-  controller: _passwordController,
-  obscureText: _hidePassword,
-  isValid: _isPasswordValid,
-  errorText: _passwordError,
-  errorStyle: const TextStyle(
-    fontFamily: 'WorkSans',
-    fontSize: 12,
-    height: 1.35,
-    color: Color(0xFFB24B4B),
-  ),
-  onToggleVisibility: () {
-    setState(() {
-      _hidePassword = !_hidePassword;
-    });
-  },
-  onChanged: (_) => setState(() {}),
-),
+              hint: 'Enter password',
+              controller: _passwordController,
+              obscureText: _hidePassword,
+              isValid: _isPasswordValid,
+              errorText: _passwordError,
+              errorStyle: const TextStyle(
+                fontFamily: 'WorkSans',
+                fontSize: 12,
+                height: 1.35,
+                color: Color(0xFFB24B4B),
+              ),
+              onToggleVisibility: () {
+                setState(() {
+                  _hidePassword = !_hidePassword;
+                });
+              },
+              onChanged: (_) => setState(() {}),
+            ),
 
               const SizedBox(height: 24),
 
@@ -183,24 +182,24 @@ if (_passwordError == null && _confirmPasswordError == null) {
               const SizedBox(height: 8),
 
               PassTextField(
-  hint: 'Retype password',
-  controller: _confirmPasswordController,
-  obscureText: _hideConfirmPassword,
-  isValid: _isConfirmPasswordValid,
-  errorText: _confirmPasswordError,
-  errorStyle: const TextStyle(
-    fontFamily: 'WorkSans',
-    fontSize: 12,
-    height: 1.35,
-    color: Color(0xFFB24B4B),
-  ),
-  onToggleVisibility: () {
-    setState(() {
-      _hideConfirmPassword = !_hideConfirmPassword;
-    });
-  },
-  onChanged: (_) => setState(() {}),
-),
+                hint: 'Retype password',
+                controller: _confirmPasswordController,
+                obscureText: _hideConfirmPassword,
+                isValid: _isConfirmPasswordValid,
+                errorText: _confirmPasswordError,
+                errorStyle: const TextStyle(
+                  fontFamily: 'WorkSans',
+                  fontSize: 12,
+                  height: 1.35,
+                  color: Color(0xFFB24B4B),
+                ),
+                onToggleVisibility: () {
+                  setState(() {
+                    _hideConfirmPassword = !_hideConfirmPassword;
+                  });
+                },
+                onChanged: (_) => setState(() {}),
+              ),
 
               const SizedBox(height: 32),
             ],

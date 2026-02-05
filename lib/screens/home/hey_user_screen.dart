@@ -168,8 +168,13 @@ class HeyUserScreen extends StatelessWidget {
                                 SizedBox(
                                   width: double.infinity,
                                   height: 40,
-                                  child: ElevatedButton(
-                                    onPressed: () {},
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    '/create-group-intro',
+                                  );
+                                },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor:
                                           const Color(0xFFFF5A1F),
