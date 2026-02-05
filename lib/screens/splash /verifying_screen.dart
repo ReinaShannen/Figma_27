@@ -14,19 +14,7 @@ class _VerifyingScreenState extends State<VerifyingScreen> {
   bool _isVerified = false;
   Timer? _timer;
 
-  @override
-  // void initState() {
-  //   super.initState();
 
-  //   // ⏱ Simulate verification delay
-  //   _timer = Timer(const Duration(seconds:5), () {
-  //     if (mounted) {
-  //       setState(() {
-  //         _isVerified = true;
-  //       });
-  //     }
-  //   });
-  // }
   @override
 void initState() {
   super.initState();
@@ -38,7 +26,7 @@ void initState() {
       _isVerified = true;
     });
 
-    // ⏱ show "Verified" for a moment, then navigate
+
     Future.delayed(const Duration(seconds: 1), () {
       if (!mounted) return;
 

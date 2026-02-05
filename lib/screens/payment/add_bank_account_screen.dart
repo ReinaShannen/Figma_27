@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/widgets/back_button.dart';
 import '../../core/widgets/app_texfield.dart';
+import '../home/hey_user_screen.dart';
 
 class AddBankAccountScreen extends StatefulWidget {
   const AddBankAccountScreen({super.key});
@@ -60,7 +61,12 @@ class _AddBankAccountScreenState extends State<AddBankAccountScreen> {
                 height: 56,
                 child: ElevatedButton(
                   onPressed: () {
-                    _formKey.currentState?.validate();
+                    if (_formKey.currentState?.validate() ?? false) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (_) => const HeyUserScreen()),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFFF5A1F),
@@ -176,7 +182,7 @@ class _AddBankAccountScreenState extends State<AddBankAccountScreen> {
                   validator: (value) {
                     final text = value?.trim() ?? '';
                     if (text.isEmpty) return 'Account holder name is required';
-                    final nameRegex = RegExp(r'^[a-zA-Z\\s]+$');
+                    final nameRegex = RegExp(r'^[a-zA-Z\s]+$');
                     if (!nameRegex.hasMatch(text)) {
                       return 'Enter a valid name';
                     }
@@ -202,7 +208,7 @@ class _AddBankAccountScreenState extends State<AddBankAccountScreen> {
                     final text = value?.trim() ?? '';
                     if (text.isEmpty) return 'Sort code is required';
                     final cleaned = text.replaceAll('-', '');
-                    if (!RegExp(r'^\\d{6}$').hasMatch(cleaned)) {
+                    if (!RegExp(r'^\d{6}$').hasMatch(cleaned)) {
                       return 'Enter a valid sort code';
                     }
                     return null;
@@ -225,7 +231,7 @@ class _AddBankAccountScreenState extends State<AddBankAccountScreen> {
                   validator: (value) {
                     final text = value?.trim() ?? '';
                     if (text.isEmpty) return 'Account number is required';
-                    if (!RegExp(r'^\\d{8}$').hasMatch(text)) {
+                    if (!RegExp(r'^\d{8}$').hasMatch(text)) {
                       return 'Enter a valid account number';
                     }
                     return null;

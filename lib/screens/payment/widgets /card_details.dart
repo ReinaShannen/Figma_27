@@ -7,6 +7,10 @@ class CardDetailsSection extends StatelessWidget {
   final TextEditingController expiryController;
   final TextEditingController cvvController;
   final TextEditingController nameController;
+  final String? cardNumberError;
+  final String? expiryError;
+  final String? cvvError;
+  final String? nameError;
 
   const CardDetailsSection({
     super.key,
@@ -14,6 +18,10 @@ class CardDetailsSection extends StatelessWidget {
     required this.expiryController,
     required this.cvvController,
     required this.nameController,
+    this.cardNumberError,
+    this.expiryError,
+    this.cvvError,
+    this.nameError,
   });
 
   @override
@@ -37,7 +45,11 @@ class CardDetailsSection extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: const Color(0xFFECECEC)),
+            border: Border.all(
+              color: (cardNumberError != null || expiryError != null || cvvError != null)
+                  ? const Color(0xFFFF5A1F)
+                  : const Color(0xFFECECEC),
+            ),
           ),
           child: Column(
             children: [
@@ -136,6 +148,30 @@ class CardDetailsSection extends StatelessWidget {
             ],
           ),
         ),
+        if (cardNumberError != null) ...[
+          const SizedBox(height: 6),
+          Text(
+            cardNumberError!,
+            style: const TextStyle(
+              fontFamily: 'WorkSans',
+              fontSize: 12,
+              height: 1.35,
+              color: Color(0xFFFF5A1F),
+            ),
+          ),
+        ],
+        if (expiryError != null || cvvError != null) ...[
+          const SizedBox(height: 6),
+          Text(
+            expiryError ?? cvvError ?? '',
+            style: const TextStyle(
+              fontFamily: 'WorkSans',
+              fontSize: 12,
+              height: 1.35,
+              color: Color(0xFFFF5A1F),
+            ),
+          ),
+        ],
 
         const SizedBox(height: 16),
 
@@ -162,18 +198,32 @@ class CardDetailsSection extends StatelessWidget {
           decoration: InputDecoration(
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-            border: _border(),
-            enabledBorder: _border(),
+            border: _border(nameError != null),
+            enabledBorder: _border(nameError != null),
           ),
         ),
+        if (nameError != null) ...[
+          const SizedBox(height: 6),
+          Text(
+            nameError!,
+            style: const TextStyle(
+              fontFamily: 'WorkSans',
+              fontSize: 12,
+              height: 1.35,
+              color: Color(0xFFFF5A1F),
+            ),
+          ),
+        ],
       ],
     );
   }
 
-  static OutlineInputBorder _border() {
+  static OutlineInputBorder _border(bool hasError) {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(8),
-      borderSide: const BorderSide(color: Color(0xFFECECEC)),
+      borderSide: BorderSide(
+        color: hasError ? const Color(0xFFFF5A1F) : const Color(0xFFECECEC),
+      ),
     );
   }
 }

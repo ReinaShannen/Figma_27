@@ -23,6 +23,10 @@ class _AddPaymentCardScreenState extends State<AddPaymentCardScreen> {
       TextEditingController();
 
   CurrencyType _selectedCurrency = CurrencyType.inr;
+  String? _cardNumberError;
+  String? _expiryError;
+  String? _cvvError;
+  String? _nameError;
 
   @override
   void dispose() {
@@ -107,14 +111,17 @@ String? _validateCardholderName(String value) {
   return null;
 }
 void _onAddCardPressed() {
-  final cardError =
-      _validateCardNumber(_cardNumberController.text);
-  final expiryError =
-      _validateExpiry(_expiryController.text);
-  final cvvError =
-      _validateCvv(_cvvController.text);
-  final nameError =
-      _validateCardholderName(_nameController.text);
+  final cardError = _validateCardNumber(_cardNumberController.text);
+  final expiryError = _validateExpiry(_expiryController.text);
+  final cvvError = _validateCvv(_cvvController.text);
+  final nameError = _validateCardholderName(_nameController.text);
+
+  setState(() {
+    _cardNumberError = cardError;
+    _expiryError = expiryError;
+    _cvvError = cvvError;
+    _nameError = nameError;
+  });
 
   if (cardError == null &&
       expiryError == null &&
@@ -224,6 +231,10 @@ void _onAddCardPressed() {
                 expiryController: _expiryController,
                 cvvController: _cvvController,
                 nameController: _nameController,
+                cardNumberError: _cardNumberError,
+                expiryError: _expiryError,
+                cvvError: _cvvError,
+                nameError: _nameError,
               ),
 
               const SizedBox(height: 24),

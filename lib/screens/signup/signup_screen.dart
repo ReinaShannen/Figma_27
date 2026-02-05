@@ -5,6 +5,7 @@ import '../../core/widgets/primary_button.dart';
 import '../verification/change_mobile.dart';
 import '../../core/widgets/country_picker.dart';
 import '../../core/widgets/back_button.dart';
+import '../../core/app_state.dart';
 
 
 class SignupScreen extends StatefulWidget {
@@ -16,6 +17,7 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
   bool isAccepted = false;
@@ -49,6 +51,13 @@ showCustomCountryPicker(
 
 }
 
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _phoneController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +102,7 @@ showCustomCountryPicker(
 
                 // NAME
                 _textField(
+                  controller: _nameController,
                   hint: 'Enter Name',
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(
@@ -198,6 +208,8 @@ showCustomCountryPicker(
                       );
                       return;
                     }
+
+                    AppState.displayName = _nameController.text.trim();
 
                     Navigator.push(
                       context,
