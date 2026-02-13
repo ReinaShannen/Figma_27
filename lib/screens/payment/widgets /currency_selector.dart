@@ -85,7 +85,8 @@ class _CurrencyCard extends StatelessWidget {
         height: 58,
         padding: const EdgeInsets.only(left: 12, right: 17),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(9),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected
                 ? const Color(0xFFFF5A1F)

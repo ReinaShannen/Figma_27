@@ -29,8 +29,9 @@ class SkipAddCardBottomSheet extends StatelessWidget {
               'Skip adding card?',
               style: TextStyle(
                 fontFamily: 'RedHatDisplay',
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
+                fontSize: 28,
+                height: 1.4,
+                fontWeight: FontWeight.bold,
                 color: Color(0xFF1C2A39),
               ),
             ),
@@ -41,9 +42,10 @@ class SkipAddCardBottomSheet extends StatelessWidget {
               'Without a payment card, you can explore Ami, but you won’t be able to create or join any groups until one is added. You can always add it later in your profile settings.',
               style: TextStyle(
                 fontFamily: 'WorkSans',
-                fontSize: 13,
-                color: Color(0xFF8B8B8B),
-                height: 1.45,
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+                color: Color(0xFF6B6B6B),
+                height: 1.5,
               ),
             ),
 
@@ -58,6 +60,7 @@ class SkipAddCardBottomSheet extends StatelessWidget {
                   Navigator.pop(context); // Skip for now
                 },
                 style: OutlinedButton.styleFrom(
+                  backgroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24,
                     vertical: 10,
@@ -65,13 +68,13 @@ class SkipAddCardBottomSheet extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(28),
                   ),
-                  side: const BorderSide(color: Color(0xFFE7E7E7)),
+                  side: const BorderSide(color: Color(0xFFECECEC)),
                 ),
                 child: const Text(
                   'Skip for now',
                   style: TextStyle(
                     fontFamily: 'WorkSans',
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF1C2A39),
                   ),
@@ -84,7 +87,7 @@ class SkipAddCardBottomSheet extends StatelessWidget {
             // Primary button
             SizedBox(
               width: double.infinity,
-              height: 52,
+              height: 56,
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context); // Close sheet
@@ -93,14 +96,14 @@ class SkipAddCardBottomSheet extends StatelessWidget {
                   backgroundColor: const Color(0xFFFF5A1F),
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(26),
+                    borderRadius: BorderRadius.circular(28),
                   ),
                 ),
                 child: const Text(
                   'Add card now',
                   style: TextStyle(
                     fontFamily: 'WorkSans',
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
                   ),

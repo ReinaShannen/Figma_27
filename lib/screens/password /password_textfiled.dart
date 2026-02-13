@@ -32,6 +32,7 @@ class PassTextField extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
+            color: Colors.white,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: isValid
@@ -65,9 +66,7 @@ class PassTextField extends StatelessWidget {
                   IconButton(
                     onPressed: onToggleVisibility,
                     icon: Icon(
-                      obscureText
-                          ? Icons.visibility_off
-                          : Icons.visibility,
+                      obscureText ? Icons.visibility_off : Icons.visibility,
                       color: const Color(0xFF6B6B6B),
                     ),
                   ),
@@ -80,11 +79,8 @@ class PassTextField extends StatelessWidget {
           SizedBox(height: errorTopSpacing),
           Text(
             errorText!,
-            style: errorStyle ??
-                const TextStyle(
-                  fontSize: 12,
-                  color: Colors.red,
-                ),
+            style:
+                errorStyle ?? const TextStyle(fontSize: 12, color: Colors.red),
           ),
         ],
       ],

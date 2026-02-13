@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../core/widgets/back_button.dart';
+import '../../screens/groups/create_group_intro_screen.dart';
+import 'group_basics_screen.dart';
+
 
 class CreateGroupIntroScreen extends StatelessWidget {
   const CreateGroupIntroScreen({super.key});
@@ -12,21 +15,23 @@ class CreateGroupIntroScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF0A1C2E),
+
+      /// 🔻 BOTTOM BUTTON AREA
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: EdgeInsets.fromLTRB(
             _horizontalPadding,
             _contentTopPadding,
             _horizontalPadding,
-            _contentBottomPadding + MediaQuery.of(context).viewInsets.bottom,
+            _contentBottomPadding +
+                MediaQuery.of(context).viewInsets.bottom,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              /// SKIP
               GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
+                onTap: () => Navigator.pop(context),
                 child: const Text(
                   'Skip',
                   style: TextStyle(
@@ -37,12 +42,22 @@ class CreateGroupIntroScreen extends StatelessWidget {
                   ),
                 ),
               ),
+
               const SizedBox(height: 12),
+
+              /// LETS DO IT BUTTON
               SizedBox(
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const GroupBasicsScreen(),
+                      ),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFFF5A1F),
                     elevation: 0,
@@ -65,6 +80,8 @@ class CreateGroupIntroScreen extends StatelessWidget {
           ),
         ),
       ),
+
+      /// 🔻 BODY
       body: SafeArea(
         child: Stack(
           children: [
@@ -74,6 +91,7 @@ class CreateGroupIntroScreen extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
+
             SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(
                 _horizontalPadding,
@@ -86,6 +104,7 @@ class CreateGroupIntroScreen extends StatelessWidget {
                 children: [
                   const CommonBackButton(),
                   const SizedBox(height: 16),
+
                   const Text(
                     'Ready to create your first\ngroup?',
                     style: TextStyle(
@@ -96,7 +115,9 @@ class CreateGroupIntroScreen extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
+
                   const SizedBox(height: 12),
+
                   const Text(
                     'You can start now or come back to it later, it only takes a few minutes.',
                     style: TextStyle(
@@ -106,7 +127,9 @@ class CreateGroupIntroScreen extends StatelessWidget {
                       color: Color(0xFFB9C1CC),
                     ),
                   ),
+
                   const SizedBox(height: 16),
+
                   const _StepItem(
                     number: '1',
                     title: 'Add group details',
@@ -137,6 +160,7 @@ class CreateGroupIntroScreen extends StatelessWidget {
   }
 }
 
+/// 🔻 STEP ITEM WIDGET
 class _StepItem extends StatelessWidget {
   final String number;
   final String title;
@@ -174,6 +198,7 @@ class _StepItem extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
+
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

@@ -23,8 +23,9 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
   String? _passwordError;
   String? _confirmPasswordError;
 
-  final RegExp _passwordRegex =
-      RegExp(r'^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$');
+  final RegExp _passwordRegex = RegExp(
+    r'^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$',
+  );
 
   bool get _isPasswordValid =>
       _passwordRegex.hasMatch(_passwordController.text);
@@ -46,53 +47,60 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
           ? null
           : 'Your password must be at least 8 characters long and include an uppercase letter, a number, and a special character.';
 
-      _confirmPasswordError =
-          _isConfirmPasswordValid ? null : 'Passwords do not match';
+      _confirmPasswordError = _isConfirmPasswordValid
+          ? null
+          : 'Passwords do not match';
     });
-if (_passwordError == null && _confirmPasswordError == null) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => const AddPaymentCardScreen(),
-    ),
-  );
-}
-
+    if (_passwordError == null && _confirmPasswordError == null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const AddPaymentCardScreen()),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    const screenBg = Color(0xFFFAFAFC);
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: screenBg,
       resizeToAvoidBottomInset: true,
 
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(
-            16,
-            8,
-            16,
-            16 + MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: SizedBox(
-            height: 52,
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: _onNextPressed, // 👈 always enabled (Figma)
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFF5A1F),
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(26),
-                ),
-              ),
-              child: const Text(
-                'Next',
-                style: TextStyle(
-                  fontFamily: 'WorkSans',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
+      bottomNavigationBar: AnimatedPadding(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.viewInsetsOf(context).bottom,
+        ),
+        child: Container(
+          color: screenBg,
+          child: SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+              child: SizedBox(
+                height: 52,
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _onNextPressed, // 👈 always enabled (Figma)
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFF5A1F),
+                    elevation: 0,
+                    shadowColor: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(26),
+                    ),
+                  ),
+                  child: const Text(
+                    'Next',
+                    style: TextStyle(
+                      fontFamily: 'WorkSans',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -102,10 +110,10 @@ if (_passwordError == null && _confirmPasswordError == null) {
 
       /// ✅ SCROLLABLE CONTENT (NO OVERFLOW)
       body: SafeArea(
+        bottom: false,
         child: SingleChildScrollView(
-          keyboardDismissBehavior:
-              ScrollViewKeyboardDismissBehavior.onDrag,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 140),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -149,24 +157,24 @@ if (_passwordError == null && _confirmPasswordError == null) {
               const SizedBox(height: 8),
 
               PassTextField(
-              hint: 'Enter password',
-              controller: _passwordController,
-              obscureText: _hidePassword,
-              isValid: _isPasswordValid,
-              errorText: _passwordError,
-              errorStyle: const TextStyle(
-                fontFamily: 'WorkSans',
-                fontSize: 12,
-                height: 1.35,
-                color: Color(0xFFB24B4B),
+                hint: 'Enter password',
+                controller: _passwordController,
+                obscureText: _hidePassword,
+                isValid: _isPasswordValid,
+                errorText: _passwordError,
+                errorStyle: const TextStyle(
+                  fontFamily: 'WorkSans',
+                  fontSize: 12,
+                  height: 1.35,
+                  color: Color(0xFFB24B4B),
+                ),
+                onToggleVisibility: () {
+                  setState(() {
+                    _hidePassword = !_hidePassword;
+                  });
+                },
+                onChanged: (_) => setState(() {}),
               ),
-              onToggleVisibility: () {
-                setState(() {
-                  _hidePassword = !_hidePassword;
-                });
-              },
-              onChanged: (_) => setState(() {}),
-            ),
 
               const SizedBox(height: 24),
 

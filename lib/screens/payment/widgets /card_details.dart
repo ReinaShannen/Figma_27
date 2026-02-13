@@ -1,6 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+class CardNumberInputFormatter extends TextInputFormatter {
+  CardNumberInputFormatter({this.maxDigits = 16});
+
+  final int maxDigits;
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final digitsBeforeCursor = _countDigits(
+      newValue.text.substring(
+        0,
+        newValue.selection.baseOffset.clamp(0, newValue.text.length),
+      ),
+    );
+    final digitsOnly = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
+    final clipped = digitsOnly.length > maxDigits
+        ? digitsOnly.substring(0, maxDigits)
+        : digitsOnly;
+    final formatted = _groupIntoFours(clipped);
+
+    final newCursor = _cursorForDigitIndex(formatted, digitsBeforeCursor);
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: newCursor),
+    );
+  }
+
+  static int _countDigits(String text) {
+    var count = 0;
+    for (final codeUnit in text.codeUnits) {
+      if (codeUnit >= 48 && codeUnit <= 57) count++;
+    }
+    return count;
+  }
+
+  static String _groupIntoFours(String digits) {
+    final buffer = StringBuffer();
+    for (var i = 0; i < digits.length; i++) {
+      if (i != 0 && i % 4 == 0) buffer.write(' ');
+      buffer.write(digits[i]);
+    }
+    return buffer.toString();
+  }
+
+  static int _cursorForDigitIndex(String formatted, int digitIndex) {
+    if (digitIndex <= 0) return 0;
+    var digitsSeen = 0;
+    for (var i = 0; i < formatted.length; i++) {
+      final c = formatted.codeUnitAt(i);
+      if (c >= 48 && c <= 57) {
+        digitsSeen++;
+        if (digitsSeen >= digitIndex) return i + 1;
+      }
+    }
+    return formatted.length;
+  }
+}
 
 class CardDetailsSection extends StatelessWidget {
   final TextEditingController cardNumberController;
@@ -32,7 +91,7 @@ class CardDetailsSection extends StatelessWidget {
         /// CARD NUMBER LABEL
         const Text(
           'Card number',
-          
+
           style: TextStyle(
             fontFamily: 'WorkSans',
             fontSize: 13,
@@ -44,9 +103,13 @@ class CardDetailsSection extends StatelessWidget {
         /// GROUPED CARD DETAILS CONTAINER (FIGMA MATCH)
         Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: (cardNumberError != null || expiryError != null || cvvError != null)
+              color:
+                  (cardNumberError != null ||
+                      expiryError != null ||
+                      cvvError != null)
                   ? const Color(0xFFFF5A1F)
                   : const Color(0xFFECECEC),
             ),
@@ -57,13 +120,16 @@ class CardDetailsSection extends StatelessWidget {
               TextField(
                 controller: cardNumberController,
                 keyboardType: TextInputType.number,
-                  inputFormatters: [
+                inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
-                   LengthLimitingTextInputFormatter(16),
-                  ],
+                  LengthLimitingTextInputFormatter(16),
+                  CardNumberInputFormatter(maxDigits: 16),
+                ],
 
                 decoration: InputDecoration(
-                  hintText: '1237 3543 5325 23',
+                  hintText: '1234 5678 9012 3456',
+                  filled: true,
+                  fillColor: Colors.white,
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.fromLTRB(12, 16, 44, 16),
                   suffixIcon: Padding(
@@ -109,37 +175,41 @@ class CardDetailsSection extends StatelessWidget {
                       },
                       decoration: const InputDecoration(
                         hintText: 'MM/YY',
+                        filled: true,
+                        fillColor: Colors.white,
                         border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 16,
+                        ),
                       ),
                     ),
                   ),
 
                   /// VERTICAL DIVIDER
-                  Container(
-                    width: 2,
-                    height: 24,
-                    color: Color(0xFFE7E7E7),
-                  ),
+                  Container(width: 1, height: 24, color: Color(0xFFE7E7E7)),
 
                   /// CVV
                   Expanded(
                     child: TextField(
                       controller: cvvController,
                       keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(3),
-                        ],
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(3),
+                      ],
                       obscureText: true,
-                      maxLength: 4,
+                      maxLength: 3,
                       decoration: const InputDecoration(
                         counterText: '',
                         hintText: 'CVV',
+                        filled: true,
+                        fillColor: Colors.white,
                         border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 16,
+                        ),
                       ),
                     ),
                   ),
@@ -187,17 +257,18 @@ class CardDetailsSection extends StatelessWidget {
         const SizedBox(height: 8),
         TextField(
           controller: nameController,
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(
-                RegExp(r'[a-zA-Z ]'),
-              ),
-            ],
-
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]')),
+          ],
 
           textCapitalization: TextCapitalization.words,
           decoration: InputDecoration(
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 14,
+            ),
+            filled: true,
+            fillColor: Colors.white,
             border: _border(nameError != null),
             enabledBorder: _border(nameError != null),
           ),
@@ -220,17 +291,13 @@ class CardDetailsSection extends StatelessWidget {
 
   static OutlineInputBorder _border(bool hasError) {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide(
         color: hasError ? const Color(0xFFFF5A1F) : const Color(0xFFECECEC),
       ),
     );
   }
 }
-
-
-
-
 
 // import 'package:flutter/material.dart';
 // import 'package:flutter_svg/flutter_svg.dart';

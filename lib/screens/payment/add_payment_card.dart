@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+
 import '../../core/widgets/back_button.dart';
 import 'skip_bottomsheet.dart';
 import 'verifying_card_screen.dart';
-import '../payment/widgets /card_details.dart';
-import '../payment/widgets /currency_selector.dart';
+import 'widgets /card_details.dart';
+import 'widgets /currency_selector.dart';
 
 class AddPaymentCardScreen extends StatefulWidget {
   const AddPaymentCardScreen({super.key});
@@ -13,14 +14,10 @@ class AddPaymentCardScreen extends StatefulWidget {
 }
 
 class _AddPaymentCardScreenState extends State<AddPaymentCardScreen> {
-  final TextEditingController _cardNumberController =
-      TextEditingController();
-  final TextEditingController _expiryController =
-      TextEditingController();
-  final TextEditingController _cvvController =
-      TextEditingController();
-  final TextEditingController _nameController =
-      TextEditingController();
+  final TextEditingController _cardNumberController = TextEditingController();
+  final TextEditingController _expiryController = TextEditingController();
+  final TextEditingController _cvvController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
 
   CurrencyType _selectedCurrency = CurrencyType.inr;
   String? _cardNumberError;
@@ -37,229 +34,231 @@ class _AddPaymentCardScreenState extends State<AddPaymentCardScreen> {
     super.dispose();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _unfocus());
+  }
+
+  void _unfocus() {
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
+
   void _showSkipBottomSheet() {
+    _unfocus();
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (_) => const SkipAddCardBottomSheet(),
     );
   }
+
   String? _validateCardNumber(String value) {
-  final digitsOnly = value.replaceAll(' ', '');
-
-  if (digitsOnly.isEmpty) {
-    return 'Card number is required';
-  }
-  if (digitsOnly.length < 15 || digitsOnly.length > 16) {
-    return 'Enter a valid card number';
-  }
-  return null;
-}
-
-String? _validateExpiry(String value) {
-  if (value.isEmpty) {
-    return 'Expiry date is required';
+    final digitsOnly = value.replaceAll(' ', '');
+    if (digitsOnly.isEmpty) return 'Card number is required';
+    if (digitsOnly.length < 15 || digitsOnly.length > 16) {
+      return 'Enter a valid card number';
+    }
+    return null;
   }
 
-  final parts = value.split('/');
-  if (parts.length != 2) return 'Invalid expiry date';
+  String? _validateExpiry(String value) {
+    if (value.isEmpty) return 'Expiry date is required';
 
-  final month = int.tryParse(parts[0]);
-  final year = int.tryParse(parts[1]);
+    final parts = value.split('/');
+    if (parts.length != 2) return 'Invalid expiry date';
 
-  if (month == null || year == null || month < 1 || month > 12) {
-    return 'Invalid expiry date';
+    final month = int.tryParse(parts[0]);
+    final year = int.tryParse(parts[1]);
+
+    if (month == null || year == null || month < 1 || month > 12) {
+      return 'Invalid expiry date';
+    }
+
+    final now = DateTime.now();
+    final expiry = DateTime(2000 + year, month + 1, 0);
+    if (expiry.isBefore(DateTime(now.year, now.month, 1))) {
+      return 'Card has expired';
+    }
+
+    return null;
   }
 
-  final now = DateTime.now();
-  final expiry = DateTime(2000 + year, month + 1, 0);
-
-  if (expiry.isBefore(DateTime(now.year, now.month, 1))) {
-    return 'Card has expired';
+  String? _validateCvv(String value) {
+    if (value.isEmpty) return 'CVV is required';
+    if (value.length != 3) return 'CVV must be 3 digits';
+    return null;
   }
 
-  return null;
-}
+  String? _validateCardholderName(String value) {
+    if (value.trim().isEmpty) return 'Name is required';
 
-String? _validateCvv(String value) {
-  if (value.isEmpty) {
-    return 'CVV is required';
-  }
-  if (value.length != 3) {
-    return 'CVV must be 3 digits';
-  }
-  return null;
-}
-String? _validateCardholderName(String value) {
-  if (value.trim().isEmpty) {
-    return 'Name is required';
+    final nameRegex = RegExp(r'^[a-zA-Z ]+$');
+    if (!nameRegex.hasMatch(value)) return 'Enter a valid name';
+    if (value.trim().length < 2) return 'Name is too short';
+
+    return null;
   }
 
-  final nameRegex = RegExp(r'^[a-zA-Z ]+$');
-  if (!nameRegex.hasMatch(value)) {
-    return 'Enter a valid name';
+  void _onAddCardPressed() {
+    _unfocus();
+
+    final cardError = _validateCardNumber(_cardNumberController.text);
+    final expiryError = _validateExpiry(_expiryController.text);
+    final cvvError = _validateCvv(_cvvController.text);
+    final nameError = _validateCardholderName(_nameController.text);
+
+    setState(() {
+      _cardNumberError = cardError;
+      _expiryError = expiryError;
+      _cvvError = cvvError;
+      _nameError = nameError;
+    });
+
+    if (cardError == null &&
+        expiryError == null &&
+        cvvError == null &&
+        nameError == null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const VerifyingCardScreen()),
+      );
+    }
   }
-
-  if (value.trim().length < 2) {
-    return 'Name is too short';
-  }
-
-  return null;
-}
-void _onAddCardPressed() {
-  final cardError = _validateCardNumber(_cardNumberController.text);
-  final expiryError = _validateExpiry(_expiryController.text);
-  final cvvError = _validateCvv(_cvvController.text);
-  final nameError = _validateCardholderName(_nameController.text);
-
-  setState(() {
-    _cardNumberError = cardError;
-    _expiryError = expiryError;
-    _cvvError = cvvError;
-    _nameError = nameError;
-  });
-
-  if (cardError == null &&
-      expiryError == null &&
-      cvvError == null &&
-      nameError == null) {
-    //  All valid — proceed
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const VerifyingCardScreen()),
-    );
-  }
-}
-
-
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: true,
+    const screenBg = Color(0xFFF5F5F5);
 
-      /// Bottom CTA
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(
-            16,
-            8,
-            16,
-            16 + MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: SizedBox(
-            height: 52,
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: _onAddCardPressed,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFF5A1F),
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(26),
-                ),
-              ),
-              child: const Text(
-                'Add card',
-                style: TextStyle(
-                  fontFamily: 'WorkSans',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
+    return Scaffold(
+      backgroundColor: screenBg,
+      resizeToAvoidBottomInset: true,
+      bottomNavigationBar: AnimatedPadding(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.viewInsetsOf(context).bottom,
+        ),
+        child: Container(
+          color: screenBg,
+          child: SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  GestureDetector(
+                    onTap: _showSkipBottomSheet,
+                    behavior: HitTestBehavior.opaque,
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: Text(
+                        'Skip',
+                        style: TextStyle(
+                          fontFamily: 'WorkSans',
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF1C2A39),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: 52,
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _onAddCardPressed,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFF5A1F),
+                        elevation: 0,
+                        shadowColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(26),
+                        ),
+                      ),
+                      child: const Text(
+                        'Add card',
+                        style: TextStyle(
+                          fontFamily: 'WorkSans',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
         ),
       ),
-
-      ///  Body
       body: SafeArea(
-        child: SingleChildScrollView(
-          keyboardDismissBehavior:
-              ScrollViewKeyboardDismissBehavior.onDrag,
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const CommonBackButton(),
-              const SizedBox(height: 28),
-
-              /// Header
-              const Text(
-                'Add your payment card',
-                style: TextStyle(
-                  fontFamily: 'RedHatDisplay',
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF1C2A39),
+        bottom: false,
+        child: GestureDetector(
+          onTap: _unfocus,
+          behavior: HitTestBehavior.translucent,
+          child: SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 140),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CommonBackButton(
+                  onTap: () {
+                    _unfocus();
+                    Navigator.pop(context);
+                  },
                 ),
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                'We’ll use your card to collect deposits automatically.',
-                style: TextStyle(
-                  fontFamily: 'WorkSans',
-                  fontSize: 16,
-                  color: Color(0xFF6B6B6B),
-                  height: 1.4,
-                ),
-              ),
-
-              const SizedBox(height: 32),
-
-              /// Currency selector
-              CurrencySelector(
-                selectedCurrency: _selectedCurrency,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedCurrency = value;
-                  });
-                },
-              ),
-
-              const SizedBox(height: 24),
-
-              /// Card details 
-              CardDetailsSection(
-                cardNumberController: _cardNumberController,
-                expiryController: _expiryController,
-                cvvController: _cvvController,
-                nameController: _nameController,
-                cardNumberError: _cardNumberError,
-                expiryError: _expiryError,
-                cvvError: _cvvError,
-                nameError: _nameError,
-              ),
-
-              const SizedBox(height: 24),
-
-              /// Skip
-              Center(
-                child: GestureDetector(
-                  onTap: _showSkipBottomSheet,
-                  child: const Text(
-                    'Skip',
-                    style: TextStyle(
-                      fontFamily: 'WorkSans',
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF1C2A39),
-                    ),
+                const SizedBox(height: 28),
+                const Text(
+                  'Add your payment card',
+                  style: TextStyle(
+                    fontFamily: 'RedHatDisplay',
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1C2A39),
                   ),
                 ),
-              ),
-
-              const SizedBox(height: 24),
-            ],
+                const SizedBox(height: 12),
+                const Text(
+                  'We’ll use your card to collect deposits automatically.',
+                  style: TextStyle(
+                    fontFamily: 'WorkSans',
+                    fontSize: 16,
+                    color: Color(0xFF6B6B6B),
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 32),
+                CurrencySelector(
+                  selectedCurrency: _selectedCurrency,
+                  onChanged: (value) {
+                    setState(() => _selectedCurrency = value);
+                  },
+                ),
+                const SizedBox(height: 24),
+                CardDetailsSection(
+                  cardNumberController: _cardNumberController,
+                  expiryController: _expiryController,
+                  cvvController: _cvvController,
+                  nameController: _nameController,
+                  cardNumberError: _cardNumberError,
+                  expiryError: _expiryError,
+                  cvvError: _cvvError,
+                  nameError: _nameError,
+                ),
+                const SizedBox(height: 24),
+              ],
+            ),
           ),
         ),
-        
       ),
     );
   }
