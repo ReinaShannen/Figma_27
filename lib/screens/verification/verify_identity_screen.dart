@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../screens/groups/group_created_successfully.dart';
 
 import '../../core/widgets/back_button.dart';
 import '../../core/widgets/step_progress_bar.dart';
@@ -7,10 +8,10 @@ import '../../core/widgets/step_progress_bar.dart';
 class VerifyIdentityScreen extends StatelessWidget {
   const VerifyIdentityScreen({super.key});
 
-  // 🔹 lighter background
+  //  lighter background
   static const _screenBg = Color(0xFFF4F5F6);
 
-  // 🔹 shared secondary text color
+  // shared secondary text color
   static const _secondaryText = Color(0xFF8A8A8A);
 
   @override
@@ -18,7 +19,7 @@ class VerifyIdentityScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: _screenBg,
 
-      /// 🔻 bottom section
+      /// bottom section
       bottomNavigationBar: SafeArea(
         top: false,
         child: Padding(
@@ -26,7 +27,7 @@ class VerifyIdentityScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              /// helper text (2 lines exactly like Figma)
+              /// helper text 
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Text(
@@ -45,45 +46,53 @@ class VerifyIdentityScreen extends StatelessWidget {
               const SizedBox(height: 16),
 
               /// button
-              SizedBox(
-                height: 56,
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFF5A1F),
-                    elevation: 0,
-                    shadowColor: Colors.transparent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(28),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      Text(
-                        'Start verification',
-                        style: TextStyle(
-                          fontFamily: 'WorkSans',
-                          fontSize: 16,
-                          height: 1.2,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Icon(Icons.open_in_new, size: 18, color: Colors.white),
-                    ],
-                  ),
-                ),
-              ),
+ SizedBox(
+  height: 56,
+  width: double.infinity,
+  child: ElevatedButton(
+    onPressed: () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const GroupCreatedScreen(),
+        ),
+      );
+    },
+    style: ElevatedButton.styleFrom(
+      backgroundColor: const Color(0xFFFF5A1F),
+      elevation: 0,
+      shadowColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(28),
+      ),
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: const [
+        Text(
+          'Start verification',
+          style: TextStyle(
+            fontFamily: 'WorkSans',
+            fontSize: 16,
+            height: 1.2,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
+        SizedBox(width: 8),
+        Icon(Icons.open_in_new, size: 18, color: Colors.white),
+      ],
+    ),
+  ),
+)
+
             ],
           ),
         ),
       ),
 
-      /// 🔻 body
+      ///  body
       body: SafeArea(
         bottom: false,
         child: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -187,8 +196,7 @@ class _GriffinHeader extends StatelessWidget {
                     color: Color(0xFF1C2A39),
                   ),
                 ),
-                TextSpan(text: ' '),
-                TextSpan(text: '🔥'),
+
               ],
             ),
           );
